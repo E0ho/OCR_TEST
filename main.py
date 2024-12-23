@@ -2,7 +2,7 @@ from fastapi import FastAPI, File, UploadFile, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
 from Save.save_pdf import save_uploaded_file
 from Azure_Document.Document_api import document_intelligence   # Azure Document Intelligence       # Azure Computer Vision
-# from GPT_OpenAI.GPT_vlm_API import analyze_text                 # GPT
+from GPT_OpenAI.GPT_vlm_API import analyze_text                 # GPT
 from Azure_OpenAI.Azure_OpenAI import call_azure_openai
 # from OpenAI.HuggingFace import analyze_text                   # GPT
 
