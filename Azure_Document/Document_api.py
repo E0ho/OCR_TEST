@@ -25,7 +25,7 @@ def document_intelligence(file_path):
 
         # 요청 성공: 비동기 작업 URL 반환
         if response.status_code == 202:
-            operation_location_url = response.headers["Operation-Location"]
+            operation_location_url = response.headers["Operation-Location"] 
         else:
             # 오류 응답 반환
             return {"error": response.status_code, "error_message": response.text}
@@ -43,6 +43,7 @@ def document_intelligence(file_path):
 
     # 처리 지연 오류 반환
     return {"error": "PDF 파일 처리가 오래 걸립니다 (너무 무거움)"}
+
 
 
 if __name__ == "__main__":

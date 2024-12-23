@@ -1,5 +1,9 @@
 import requests
 import os
+from langchain.embeddings import OpenAIEmbeddings                       # Word Embedding
+from langchain.vectorstores import Chroma                               # Vector DB (Chroma DB)
+
+
 
 def analyze_text(prompt: str, category: str) -> str:
 
@@ -7,25 +11,22 @@ def analyze_text(prompt: str, category: str) -> str:
     gpt_api_key = os.environ.get("gpt_api_key")
     url = "https://api.openai.com/v1/chat/completions"
 
-    target = ''
-    if category == '전자지급 보증서':
-        target = "{ 보증인: / 보증 금액: / 보증 기간 (시작일): / 보증 기간 (기한일): / 채무자: / 보증서 발급 일자: }"
-    
-    elif category == '물품대금 보증보험':
-        target = "{ 보험 계약자: / 보험 가입 금액: / 보험 기간 (시작일): / 보험 기간 (기한일): / 증권 발급 지점: / 증권 발급 일자: / 증권 발급 기업: }"
-    
-    elif category == '신용 보증서 (변경)':
-        target = "{ 채권자: / 피보증인(기업체) : / 피보증인(대표자) : / 보증 내용 일자 : / 변경된 보증 기한 : / 금액 :  / 발급일 : }"
-    else:
-        target = "{ 보증처 : / 채무자: /  보증금 : / 보증 기일 (기한일) :  / 발급일 : }"
+    embeddings = OpenAIEmbeddings(model="text-embedding-ada-002", openai_api_key=gpt_api_key)
+    database = Chroma(persist_directory="./vector_db", embedding_function = embeddings )
 
-    prompt = "참조 문장 : " + prompt + "\n" + "타겟 : " + target + "\n" + "타겟의 각 Key에 해당하는 값을 참조 문장에서 찾아서 정재해 (target만 리턴, 다른 말 X)"
+    # Chroma에서 filter와 query를 조합하여 검색
+    target = database.similarity_search_with_score(
+        filter = filter_conditions, 
+        k = 3
+    )
+
+    prompt = "참조 문장 : " + prompt
 
     # 요청 데이터
     data = {
         "model": "gpt-4o",
         "messages": [
-            {"role": "user", "content": prompt}
+            {"role": "user", "content": prompt + target}
         ],
         "temperature": 0.0,
         "top_p" : 0.05
