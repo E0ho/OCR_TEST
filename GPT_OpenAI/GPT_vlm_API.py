@@ -1,7 +1,7 @@
 import requests
 import os
-from langchain.embeddings import OpenAIEmbeddings                       # Word Embedding
-from langchain.vectorstores import Chroma                               # Vector DB (Chroma DB)
+from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.vectorstores import Chroma  
 
 
 
@@ -16,8 +16,9 @@ def analyze_text(prompt: str, category: str) -> str:
 
     # Chroma에서 filter와 query를 조합하여 검색
     target = database.similarity_search_with_score(
-        filter = filter_conditions, 
-        k = 3
+        query = '',
+        filter = {"Category": category}, 
+        k = 1
     )
 
     prompt = "참조 문장 : " + prompt
