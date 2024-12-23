@@ -26,7 +26,7 @@ def analyze_text(prompt: str, category: str) -> str:
     data = {
         "model": "gpt-4o",
         "messages": [
-            {"role": "user", "content": prompt + target}
+            {"role": "user", "content": prompt + target[0][0].page_content}
         ],
         "temperature": 0.0,
         "top_p" : 0.05
